@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Javier Gallegos — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f1ec;
+    --bg-card: #ffffff;
+    --text-primary: #1a1816;
+    --text-secondary: #5c564e;
+    --text-muted: #9a9389;
+    --accent: #8b6d2e;
+    --accent-light: #c4a46c;
+    --accent-dim: rgba(139,109,46,0.07);
+    --border: #ddd7ce;
+    --border-hover: #c4bdb3;
+    --radius: 2px;
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-body: 'Instrument Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .viewport-shell {
+    height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+  }
+
+  /* --- Top Bar --- */
+  .topbar {
+    padding: 1.25rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-left {
+    display: flex;
+    align-items: baseline;
+    gap: 1.75rem;
+  }
+  .topbar-name {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--text-primary);
+  }
+  .topbar-role {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .topbar-links a {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .topbar-links a:hover { color: var(--accent); }
+
+  /* --- Main --- */
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 2.5rem 0;
+    min-height: 0;
+  }
+
+  /* --- Hero --- */
+  .hero {
+    text-align: center;
+    max-width: 560px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.15s forwards;
+  }
+  .hero-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  .hero-tools {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .tool-tag {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: var(--radius);
+    transition: all 0.3s;
+  }
+  .tool-tag:hover {
+    border-color: var(--accent-light);
+    color: var(--accent);
+  }
+
+  /* --- Projects --- */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 1100px;
+  }
+
+  .project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: border-color 0.35s, box-shadow 0.35s;
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  .project-card:nth-child(1) { animation: fadeUp 0.7s ease 0.3s forwards; }
+  .project-card:nth-child(2) { animation: fadeUp 0.7s ease 0.45s forwards; }
+
+  .project-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+  }
+
+  .metric-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: #faf8f5;
+    border-bottom: 1px solid var(--border);
+  }
+  .metric-cell {
+    padding: 0.9rem 1rem;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .metric-cell:last-child { border-right: none; }
+  .metric-value {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+  .metric-label {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+    line-height: 1.4;
+  }
+
+  .card-body {
+    padding: 1.35rem 1.4rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .card-badge {
+    position: absolute;
+    top: 1.35rem;
+    right: 1.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent-light);
+    background: var(--accent-dim);
+    padding: 0.2rem 0.3rem;
+    border-radius: var(--radius);
+  }
+  .project-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+  }
+  .project-subtitle {
+    font-size: 0.72rem;
+    color: var(--accent);
+    margin-bottom: 0.9rem;
+    font-weight: 500;
+  }
+  .project-description {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .card-footer {
+    padding: 0 1.4rem 1.35rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .project-tags {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    max-width: 70%;
+  }
+  .project-tags span {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .project-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .project-link svg {
+    width: 11px;
+    height: 11px;
+    transition: transform 0.3s ease;
+  }
+  .project-link:hover svg {
+    transform: translate(2px, -2px);
+  }
+
+  /* --- Footer --- */
+  .footer {
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-left {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .footer-right a {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-right a:hover { color: var(--accent); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 1080px) {
+    .viewport-shell {
+      height: auto;
+      min-height: 100vh;
+      padding: 0 1.5rem;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .projects-grid { grid-template-columns: 1fr; }
+    .card-footer { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    .project-tags { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="viewport-shell">
+
+  <nav class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-name">Javier Gallegos</div>
+      <div class="topbar-role">Business Analytics</div>
+    </div>
+    <div class="topbar-links">
+      <a href="https://github.com/jdesk99" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="main-content">
+
+    <div class="hero">
+      <div class="hero-label">Project Portfolio</div>
+      <h1>Forecasting demand.<br><em>Quantifying risk.</em><br>Optimizing cost.</h1>
+      <p class="hero-sub">
+        I build analytical solutions grounded in quantitative method and business context — combining demand forecasting, SQL-based analysis, and stochastic simulation to answer real operations and strategy questions. UC San Diego, B.S. Business Psychology · Analytics Minor.
+      </p>
+      <div class="hero-tools">
+        <span class="tool-tag">Excel</span>
+        <span class="tool-tag">SQL</span>
+        <span class="tool-tag">Tableau</span>
+        <span class="tool-tag">Python</span>
+      </div>
+    </div>
+
+    <div class="projects-grid">
+
+      <article class="project-card">
+        <div class="metric-strip">
+          <div class="metric-cell">
+            <div class="metric-value">0.034</div>
+            <div class="metric-label">Customer HHI</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-value">3–4</div>
+            <div class="metric-label">Effective SKUs</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-value">$129k</div>
+            <div class="metric-label">Peak Revenue</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge">Latest Project</div>
+          <h2 class="project-title">Revenue &amp; Concentration Analysis</h2>
+          <div class="project-subtitle">SQL-Based Growth Decomposition &amp; Concentration Risk Assessment</div>
+          <p class="project-description">
+            Evaluated revenue growth dynamics, customer concentration risk, and SKU-level dependency using layered SQL architecture, HHI, effective counts, and Pareto modeling. Identified product-level fragility within select categories as the primary structural exposure — not customer or category dependency.
+          </p>
+        </div>
+        <div class="card-footer">
+          <div class="project-tags">
+            <span>SQL</span>
+            <span>Excel</span>
+            <span>Tableau</span>
+            <span>HHI</span>
+            <span>Pareto</span>
+          </div>
+          <a class="project-link" href="https://jdesk99.github.io/SQL-Revenue-Concentration-Analysis-git/" target="_blank" rel="noopener">
+            View
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="project-card">
+        <div class="metric-strip">
+          <div class="metric-cell">
+            <div class="metric-value">9%</div>
+            <div class="metric-label">Cost Reduction</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-value">~95%</div>
+            <div class="metric-label">Service Level</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-value">10k</div>
+            <div class="metric-label">Simulations</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <h2 class="project-title">Forecast-Driven Inventory Policy</h2>
+          <div class="project-subtitle">Probabilistic Demand Forecasting &amp; Stochastic Inventory Optimization</div>
+          <p class="project-description">
+            Reduced total inventory cost by ≈9% (~$1,684/year) while sustaining a 95% service level. Built and validated a probabilistic demand forecasting model using Holt-Winters and 10,000-run Monte Carlo simulation on 5 years of daily sales data. Designed alternative (R, Q) policies through grid search, balancing holding vs. ordering costs.
+          </p>
+        </div>
+        <div class="card-footer">
+          <div class="project-tags">
+            <span>Excel</span>
+            <span>Python</span>
+            <span>Tableau</span>
+            <span>Holt-Winters</span>
+            <span>Monte Carlo</span>
+          </div>
+          <a class="project-link" href="https://jdesk99.github.io/Project-1-Forecasting-Git/" target="_blank" rel="noopener">
+            View
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+          </a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-left">&copy; 2025 Javier Gallegos</div>
+    <div class="footer-right">
+      <a href="https://github.com/jdesk99" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
