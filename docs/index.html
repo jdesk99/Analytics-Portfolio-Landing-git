@@ -213,17 +213,15 @@
   .card-body {
     padding: 1.35rem 1.4rem;
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  }
-  .project-card:has(.card-badge) .project-title {
-    padding-right: 7.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto 1fr;
+    column-gap: 0.75rem;
   }
   .card-badge {
-    position: absolute;
-    top: 1.35rem;
-    right: 1.4rem;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
     font-family: var(--font-mono);
     font-size: 0.58rem;
     letter-spacing: 0.05em;
@@ -233,26 +231,33 @@
     background: var(--accent-dim);
     padding: 0.15rem 0.25rem;
     border-radius: var(--radius);
+    white-space: nowrap;
   }
   .project-title {
+    grid-column: 1;
+    grid-row: 1;
     font-family: var(--font-display);
     font-size: 1.3rem;
     font-weight: 400;
     line-height: 1.2;
     color: var(--text-primary);
     margin-bottom: 0.3rem;
+    align-self: center;
   }
   .project-subtitle {
+    grid-column: 1 / -1;
+    grid-row: 2;
     font-size: 0.76rem;
     color: var(--accent);
     margin-bottom: 0.9rem;
     font-weight: 500;
   }
   .project-description {
+    grid-column: 1 / -1;
+    grid-row: 3;
     font-size: 0.83rem;
     color: var(--text-secondary);
     line-height: 1.65;
-    flex: 1;
   }
 
   .card-footer {
@@ -350,14 +355,7 @@
 
   @media (max-width: 700px) {
     .projects-grid { grid-template-columns: 1fr; }
-    .card-footer { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
-    .project-tags { max-width: 100%; }
-    .card-badge {
-      position: static;
-      display: inline-block;
-      margin-bottom: 0.6rem;
-      align-self: flex-start;
-    }
+    .project-tags { max-width: 70%; }
   }
 </style>
 </head>
